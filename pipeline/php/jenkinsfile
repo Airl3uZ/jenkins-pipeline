@@ -1,9 +1,10 @@
+@Library('checkoutCode')
 pipeline {
     agent any
-    libraries {
-        lib('checkoutCode@master')
-    }
-    stages {
+    // libraries {
+    //     lib('checkoutCode@master')
+    // }
+    // stages {
         stage("Code Checkout") {
             steps {
                 checkoutCode(
