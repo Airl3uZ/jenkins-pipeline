@@ -4,7 +4,7 @@ pipeline {
     // libraries {
     //     lib('checkoutCode@master')
     // }
-    // stages {
+    stages {
         stage("Code Checkout") {
             steps {
                 checkoutCode(
