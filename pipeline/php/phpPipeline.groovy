@@ -1,4 +1,4 @@
-@Library('checkoutCode') _
+@Library('SharedLibrary')_
 pipeline {
     agent any
     // libraries {
