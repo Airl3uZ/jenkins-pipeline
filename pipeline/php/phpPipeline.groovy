@@ -39,7 +39,7 @@ pipeline {
                 sonarqubeScan(
                     file: 'project.properties',
                     home: "${scannerHome}"
-                    )
+                )
             }
         }
         // stage("OWASP dependency check") {
