@@ -33,7 +33,7 @@ pipeline {
         // }
         stage('SCA and Quality') {
             environment {
-                scannerHome = tool 'SonarQubeScanner'
+                scannerHome = tool 'sonar-scanner'
             }
             steps {            
                 sonarqube(
