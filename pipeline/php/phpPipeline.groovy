@@ -32,7 +32,15 @@ pipeline {
         //     }
         // }
         stage('SCA and Quality') {
-            sonarqubeScan()
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
+            steps {            
+                sonarqube(
+                    file: 'project.properties',
+                    home: 'scannerHome',
+                    )
+            }
         }
         // stage("OWASP dependency check") {
         //     steps {
