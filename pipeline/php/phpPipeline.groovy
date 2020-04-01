@@ -37,7 +37,7 @@ pipeline {
             }
             steps {            
                 sonarqubeScan(
-                    file: 'project.properties',
+                    file: "${env.WORKSPACE}/project.properties",
                     home: "${scannerHome}"
                 )
             }
