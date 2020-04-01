@@ -48,6 +48,18 @@ pipeline {
         //         dependencyCheck additionalArguments: '--project testCI --scan app/** --out report/owasp_dependency_check/result.html --format HTML', odcInstallation: 'owasp-depend-chk'
         //     }
         // }
+        stage("report") {
+            steps {
+                step([$class: 'CopyArtifact',
+                projectName: 'CI_report',
+                filter: 'result/*'])
+                genHTMLReport(
+                    reportDir: 'result/',
+                    reportFiles: "testCI.html",
+                    reportName: testCI_report
+                )
+            }
+        }
     }
     post {
         always {
