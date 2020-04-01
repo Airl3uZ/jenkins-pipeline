@@ -31,25 +31,9 @@ pipeline {
         //         }
         //     }
         // }
-        // stage('SCA') {
-        //     environment {
-        //         sonar = tool name: 'sonar-scanner'
-        //     }
-        //     steps {
-        //         withSonarQubeEnv('T2P-SonarQube') {
-        //         sh "${sonar}/bin/sonar-scanner -Dproject.settings=app/sonar-project.properties"
-        //         } // submitted SonarQube taskId is automatically attached to the pipeline context
-        //     }
-        // }
-        // stage("Quality Gate") {
-        //     steps {
-        //         timeout(time: 1, unit: 'HOURS') {
-        //             // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-        //             // true = set pipeline to UNSTABLE, false = don't
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage('SCA and Quality') {
+            sonarqubeScan()
+        }
         // stage("OWASP dependency check") {
         //     steps {
         //         sh "mkdir -p report/owasp_dependency_check"
