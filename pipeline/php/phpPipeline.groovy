@@ -11,9 +11,13 @@ def loadProperties() {
 pipeline {
     agent any
     stages {
-        stage("Code Checkout") {
+        stage("Load Project Properties") {
             steps {
                 loadProperties()
+            }
+        }
+        stage("Code Checkout") {
+            steps {
                 checkoutCode(
                     branch: "master",
                     appenv: "${properties.APP_ENV}",
