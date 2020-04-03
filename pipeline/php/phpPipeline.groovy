@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage("Load Project Properties") {
             steps {
-                properties = readFile 'project.properties'
+                def projproperties = readFile 'project.properties'
             }
         }
         stage("Code Checkout") {
