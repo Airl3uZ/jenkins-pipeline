@@ -12,7 +12,7 @@ pipeline {
         }
         stage("Checkout APP") {
             steps {
-                new File("app").mkdir()
+                sh "mkdir app"
                 dir("app") {
                     checkoutCode(
                         branch: "BUILD_T2PCHECKOUTAPI_DEV",
@@ -20,7 +20,7 @@ pipeline {
                         repo: "build_configs"
                     )
                 }
-                new File("api_checkout").mkdir()
+                sh "mkdir api_checkoutv3"
                 dir('app/api_checkout') {
                     checkoutCode(
                         branch: "DEVELOP",
@@ -28,7 +28,7 @@ pipeline {
                         repo: "dev_api_t2pcheckoutv3"
                     )
                 }
-                new File("_inc").mkdir()
+                sh "mkdir _inc"
                 dir('app/_inc')  {
                     checkoutCode(
                         branch: "_INC_MAIN",
