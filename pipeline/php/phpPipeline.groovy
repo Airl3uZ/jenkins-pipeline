@@ -17,7 +17,7 @@ pipeline {
                     checkoutCode(
                         branch: "BUILD_T2PCHECKOUTAPI_DEV",
                         appenv: "dev",
-                        repo: "build_configs"
+                        repo: "build_configs",
                         credentialsId: "75aa10b1-d3c0-4675-818f-73b572b08684"
                     )
                 }
@@ -26,7 +26,7 @@ pipeline {
                     checkoutCode(
                         branch: "DEVELOP",
                         appenv: "dev",
-                        repo: "dev_api_t2pcheckoutv3"
+                        repo: "dev_api_t2pcheckoutv3",
                         credentialsId: "75aa10b1-d3c0-4675-818f-73b572b08684"
                     )
                 }
@@ -35,7 +35,7 @@ pipeline {
                     checkoutCode(
                         branch: "_INC_MAIN",
                         appenv: "dev",
-                        repo: "dev_inc_main"
+                        repo: "dev_inc_main",
                         credentialsId: "75aa10b1-d3c0-4675-818f-73b572b08684"
                     )                 
                 }
