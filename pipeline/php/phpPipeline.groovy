@@ -1,19 +1,10 @@
 @Library('SharedLibrary')_
-properties = null
-
-def loadProperties() {
-    node {
-        properties = readProperties file: 'project.properties'
-        println properties
-        echo "Immediate one ${properties.repo}"
-    }
-}
 pipeline {
     agent any
     stages {
         stage("Load Project Properties") {
             steps {
-                properties = readProperties file: 'project.properties'
+                properties = readFile 'project.properties'
             }
         }
         stage("Code Checkout") {
