@@ -2,14 +2,6 @@
 pipeline {
     agent any
     stages {
-        // stage("check Project Properties") {
-        //     steps {
-        //         script  {
-        //             def props = readProperties  file: 'project.properties'
-        //             echo "${props.PROJECTNAME}"
-        //         }
-        //     }
-        // }
         stage("Checkout APP") {
             steps {
                 dir("app") {
@@ -64,7 +56,8 @@ pipeline {
             environment {
                 scannerHome = tool 'sonar-scanner'
             }
-            steps {            
+            steps {   
+                sonarprop = pwd()         
                 sonarqubeScan(
                     file: "sonar.properties",
                     home: "${scannerHome}"
