@@ -14,12 +14,12 @@ pipeline {
             steps {
                 sh "mkdir -p app"
                 dir("app") {
-                    checkoutCode(
-                        branch: "origin/DEVELOP",
-                        appenv: "dev",
-                        repo: "dev_cfg",
-                        credentialsId: "t2p-git"
-                    )
+                    checkout([
+                    $class: 'GitSCM',
+                    branches: [[name:  'origin/DEVELOP' ]],
+                    userRemoteConfigs: [
+                        [ url: 'git@dev-www.ibaht.com:dev_cfg.git' ],
+                        [credentialsId: 't2p-git']]])
                 }
                 sh "mkdir app/api_checkoutv3"
                 dir('app/api_checkout') {
