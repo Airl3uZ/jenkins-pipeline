@@ -1,36 +1,40 @@
 @Library('SharedLibrary')_
+properties = null  
+
 pipeline {
     agent any
-    // libraries {
-    //     lib('checkoutCode@master')
-    // }
     stages {
         stage("Code Checkout") {
             steps {
+                loadProjectProperties()
                 checkoutCode(
                     branch: "master",
-                    url: "https://github.com/Airl3uZ/demo-php-ci.git",
+                    appenv: "${properties.APP_ENV}",
+                    repo: "${properties.REPO}"
                 )                    
             }
         }
-        // stage('UnitTest') {
-        //     agent {
-        //         docker {
-        //             args "-v app:/app -p 9000:9000"
-        //             image 'webdevops/php:latest'
-        //             customWorkspace "php"
-        //             reuseNode true
-        //         }
-        //     }
-        //     steps {
-        //         dir('app') {
-        //             echo "Composer Update"
-        //             sh 'composer update'
-        //             sh 'ls'
-        //             sh './vendor/bin/phpunit'
-        //         }
-        //     }
-        // }
+        stage('UnitTest') {
+            agent {
+                docker {
+                    args "-v app:/app -p 9000:9000"
+                    image 'webdevops/php:latest'
+                    customWorkspace "php"
+                    reuseNode true
+                }
+            }
+            options {
+                timeout(time: 5, unit: "MINUTES")
+            }
+            steps {
+                dir('app') {
+                    echo "Composer Update"
+                    sh 'composer update'
+                    sh 'ls'
+                    sh './vendor/bin/phpunit'
+                }
+            }
+        }
         stage('SCA and Quality') {
             environment {
                 scannerHome = tool 'sonar-scanner'
@@ -53,7 +57,7 @@ pipeline {
                 step([$class: 'CopyArtifact',
                 projectName: 'CI_report',
                 filter: 'result/*'])
-                genHTMLReport(
+                reportHTML(
                     reportDir: 'result/',
                     reportFiles: "testCI.html",
                     reportName: testCI_report
