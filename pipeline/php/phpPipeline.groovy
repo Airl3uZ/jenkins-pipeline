@@ -15,7 +15,7 @@ pipeline {
                 sh "mkdir -p app"
                 dir("app") {
                     checkoutCode(
-                        branch: "DEVELOP",
+                        branch: "origin/DEVELOP",
                         appenv: "dev",
                         repo: "dev_cfg",
                         credentialsId: "t2p-git"
@@ -24,7 +24,7 @@ pipeline {
                 sh "mkdir app/api_checkoutv3"
                 dir('app/api_checkout') {
                     checkoutCode(
-                        branch: "DEVELOP",
+                        branch: "origin/DEVELOP",
                         appenv: "dev",
                         repo: "dev_api_t2pcheckoutv3",
                         credentialsId: "t2p-git"
@@ -33,7 +33,7 @@ pipeline {
                 sh "mkdir app/_inc"
                 dir('app/_inc')  {
                     checkoutCode(
-                        branch: "DEVELOP",
+                        branch: "origin/DEVELOP",
                         appenv: "dev",
                         repo: "dev_inc_main",
                         credentialsId: "t2p-git"
