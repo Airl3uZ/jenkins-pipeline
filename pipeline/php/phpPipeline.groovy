@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage("Load Project Properties") {
             steps {
-                loadProperties()
+                properties = readProperties file: 'project.properties'
             }
         }
         stage("Code Checkout") {
