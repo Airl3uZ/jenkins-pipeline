@@ -12,7 +12,7 @@ pipeline {
         }
         stage("Checkout APP") {
             steps {
-                sh "mkdir app"
+                sh "mkdir -p app"
                 dir("app") {
                     checkoutCode(
                         branch: "DEVELOP",
@@ -21,7 +21,7 @@ pipeline {
                         credentialsId: "t2p-git"
                     )
                 }
-                sh "mkdir api_checkoutv3"
+                sh "mkdir app/api_checkoutv3"
                 dir('app/api_checkout') {
                     checkoutCode(
                         branch: "DEVELOP",
@@ -30,7 +30,7 @@ pipeline {
                         credentialsId: "t2p-git"
                     )
                 }
-                sh "mkdir _inc"
+                sh "mkdir app/_inc"
                 dir('app/_inc')  {
                     checkoutCode(
                         branch: "DEVELOP",
@@ -44,9 +44,8 @@ pipeline {
         stage('UnitTest') {
             agent {
                 docker {
-                    args "-v ./:/data/api_checkout"
-                    image 'webdevops/php:latest'
-                    customWorkspace "php"
+                    args "-v app:/data"
+                    image '986003803012.dkr.ecr.ap-southeast-1.amazonaws.com/nginxphp72:latest'
                     reuseNode true
                 }
             }
@@ -54,10 +53,11 @@ pipeline {
                 timeout(time: 5, unit: "MINUTES")
             }
             steps {
-                dir('app') {
+                dir('/data/api_checkout') {
                     echo "Composer Update"
                     sh 'composer update'
                     sh 'ls'
+                    echo "Unit Test"
                     sh './vendor/bin/phpunit'
                 }
             }
@@ -68,7 +68,7 @@ pipeline {
             }
             steps {            
                 sonarqubeScan(
-                    file: "project.properties",
+                    file: "sonar.properties",
                     home: "${scannerHome}"
                 )
             }
