@@ -16,7 +16,7 @@ pipeline {
                 dir("app") {
                     checkout([
                     $class: 'GitSCM',
-                    branches: [[name:  'origin/DEVELOP' ]],
+                    branches: [[name:  'DEVELOP' ]],
                     userRemoteConfigs: [
                         [ url: 'git@dev-www.ibaht.com:dev_cfg.git' ],
                         [credentialsId: 't2p-git']]])
