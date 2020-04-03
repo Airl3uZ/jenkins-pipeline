@@ -1,12 +1,11 @@
 @Library('SharedLibrary')_
-properties = null  
-
+properties = null
+properties = loadProjectProperties()
 pipeline {
     agent any
     stages {
         stage("Code Checkout") {
             steps {
-                loadProjectProperties()
                 checkoutCode(
                     branch: "master",
                     appenv: "${properties.APP_ENV}",
