@@ -15,9 +15,9 @@ pipeline {
                 sh "mkdir app"
                 dir("app") {
                     checkoutCode(
-                        branch: "BUILD_T2PCHECKOUTAPI_DEV",
+                        branch: "DEVELOP",
                         appenv: "dev",
-                        repo: "build_configs",
+                        repo: "dev_cfg",
                         credentialsId: "75aa10b1-d3c0-4675-818f-73b572b08684"
                     )
                 }
@@ -33,7 +33,7 @@ pipeline {
                 sh "mkdir _inc"
                 dir('app/_inc')  {
                     checkoutCode(
-                        branch: "_INC_MAIN",
+                        branch: "DEVELOP",
                         appenv: "dev",
                         repo: "dev_inc_main",
                         credentialsId: "75aa10b1-d3c0-4675-818f-73b572b08684"
