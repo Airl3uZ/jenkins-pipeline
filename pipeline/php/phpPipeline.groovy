@@ -10,19 +10,38 @@ pipeline {
                 }
             }
         }
-        stage("Code Checkout") {
+        stage("Checkout APP") {
             steps {
-                checkoutCode(
-                    branch: "master",
-                    appenv: "${properties.APP_ENV}",
-                    repo: "${properties.REPO}"
-                )                    
+                new File("app").mkdir()
+                dir("app") {
+                    checkoutCode(
+                        branch: "BUILD_T2PCHECKOUTAPI_DEV",
+                        appenv: "dev",
+                        repo: "build_configs"
+                    )
+                }
+                new File("api_checkout").mkdir()
+                dir('app/api_checkout') {
+                    checkoutCode(
+                        branch: "DEVELOP",
+                        appenv: "dev",
+                        repo: "dev_api_t2pcheckoutv3"
+                    )
+                }
+                new File("_inc").mkdir()
+                dir('app/_inc')  {
+                    checkoutCode(
+                        branch: "_INC_MAIN",
+                        appenv: "dev",
+                        repo: "dev_inc_main"
+                    )                 
+                }
             }
         }
         stage('UnitTest') {
             agent {
                 docker {
-                    args "-v app:/app -p 9000:9000"
+                    args "-v ./:/data/api_checkout"
                     image 'webdevops/php:latest'
                     customWorkspace "php"
                     reuseNode true
