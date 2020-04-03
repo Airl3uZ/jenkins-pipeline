@@ -18,6 +18,7 @@ pipeline {
                         branch: "BUILD_T2PCHECKOUTAPI_DEV",
                         appenv: "dev",
                         repo: "build_configs"
+                        credentialsId: "75aa10b1-d3c0-4675-818f-73b572b08684"
                     )
                 }
                 sh "mkdir api_checkoutv3"
@@ -26,6 +27,7 @@ pipeline {
                         branch: "DEVELOP",
                         appenv: "dev",
                         repo: "dev_api_t2pcheckoutv3"
+                        credentialsId: "75aa10b1-d3c0-4675-818f-73b572b08684"
                     )
                 }
                 sh "mkdir _inc"
@@ -34,6 +36,7 @@ pipeline {
                         branch: "_INC_MAIN",
                         appenv: "dev",
                         repo: "dev_inc_main"
+                        credentialsId: "75aa10b1-d3c0-4675-818f-73b572b08684"
                     )                 
                 }
             }
