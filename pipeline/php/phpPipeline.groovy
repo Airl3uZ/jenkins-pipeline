@@ -1,10 +1,11 @@
 @Library('SharedLibrary')_
+def props = readProperties  file: 'project.properties'
 pipeline {
     agent any
     stages {
-        stage("Load Project Properties") {
+        stage("check Project Properties") {
             steps {
-                def projproperties = readFile 'project.properties'
+                echo "${props.PROJECTNAME}"
             }
         }
         stage("Code Checkout") {
