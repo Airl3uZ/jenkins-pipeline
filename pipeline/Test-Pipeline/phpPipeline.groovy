@@ -8,9 +8,6 @@ pipeline {
     stages {
         stage("Checkout APP") {
             steps {
-                script {
-                    sh printenv
-                }
                 checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']],doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
             }
         }
@@ -42,6 +39,7 @@ pipeline {
                         scannerHome = tool name: 'sonar-scanner'
                     }
                     steps {
+                        sh "printenv"
                         echo "Do Static code analysis with SonarQube"
                         withSonarQubeEnv('T2P-SonarQube') { 
                             echo "${env.WORKSPACE}"
