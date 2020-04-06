@@ -30,7 +30,7 @@ pipeline {
                             sh 'composer update'
                             sh 'ls'
                             echo "Unit Test"
-                            sh 'vendor/bin/phpunit'
+                            sh './vendor/bin/phpunit'
                         }
                     }
                 }
@@ -43,19 +43,9 @@ pipeline {
                         withSonarQubeEnv('T2P-SonarQube') {   
                             sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
                             // submitted SonarQube taskId is automatically attached to the pipeline context
-                            // timeout(time: 10, unit: 'MINUTES') {
-                            //     waitForQualityGate abortPipeline: true
-                            // }
-                        }
-                    }
-                }
-                stage("Quality Gate") {
-                    steps {
-                        echo "Get QualityGate response from SonarQube"
-                        timeout(time: 10, unit: 'MINUTES') {
-                            // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                            // true = set pipeline to UNSTABLE, false = don't
-                            waitForQualityGate abortPipeline: true
+                            timeout(time: 10, unit: 'MINUTES') {
+                                waitForQualityGate abortPipeline: true
+                            }
                         }
                     }
                 }
