@@ -39,11 +39,11 @@ pipeline {
                         scannerHome = tool name: 'sonar-scanner'
                     }
                     steps {
-                        sh "printenv"
+                        // sh "printenv"
                         echo "Do Static code analysis with SonarQube"
                         withSonarQubeEnv('T2P-SonarQube') { 
-                            echo "${env.WORKSPACE}"
-                            sh "pwd && ls -altr"  
+                            // echo "${env.WORKSPACE}"
+                            // sh "pwd && ls -altr"  
                             sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
                         }
                         timeout(time: 10, unit: 'MINUTES') {
