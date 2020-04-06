@@ -34,19 +34,17 @@ pipeline {
                         }
                     }
                 }
-                stage('SonarQube code analysis') {
+                stage('SonarQube code analysis and Quality Gate') {
                     steps {
+                        echo "Do Static code analysis with SonarQube"
                         withSonarQubeEnv('T2P-SonarQube') {   
                             withEnv(["scannerHome = ${tool sonar-scanner}"]) {
                                 sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar.projectFile"
                             } // submitted SonarQube taskId is automatically attached to the pipeline context
-                        }
-                    }
-                }
-                stage('Quality Gate') {
-                    steps {
-                        timeout(time: 10, unit: 'MINUTES') {
-                            waitForQualityGate abortPipeline: true
+                            echo "Get QualityGate response from SonarQube"
+                            timeout(time: 10, unit: 'MINUTES') {
+                                waitForQualityGate abortPipeline: true
+                            }
                         }
                     }
                 }
