@@ -8,6 +8,7 @@ pipeline {
     stages {
         stage("Checkout APP") {
             steps {
+                cleanWs deleteDirs: true
                 checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']],doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
             }
         }
@@ -39,12 +40,14 @@ pipeline {
                         scannerHome = tool name: 'sonar-scanner'
                     }
                     steps {
-                        echo "Do Static code analysis with SonarQube"
-                        withSonarQubeEnv('T2P-SonarQube') {   
-                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
-                            // submitted SonarQube taskId is automatically attached to the pipeline context
-                            timeout(time: 10, unit: 'MINUTES') {
-                                waitForQualityGate abortPipeline: true
+                        dir('Test-Pipeline') {
+                            echo "Do Static code analysis with SonarQube"
+                            withSonarQubeEnv('T2P-SonarQube') {   
+                                sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
+                                // submitted SonarQube taskId is automatically attached to the pipeline context
+                                timeout(time: 10, unit: 'MINUTES') {
+                                    waitForQualityGate abortPipeline: true
+                                }
                             }
                         }
                     }
