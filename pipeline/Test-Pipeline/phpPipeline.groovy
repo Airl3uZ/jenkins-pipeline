@@ -8,9 +8,7 @@ pipeline {
     stages {
         stage("Checkout APP") {
             steps {
-                dir("app") {
-                    checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
-                }
+                checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']],doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
             }
         }
         stage("Tests") {
