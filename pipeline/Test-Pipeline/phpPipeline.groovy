@@ -36,13 +36,14 @@ pipeline {
                 }
                 stage('SonarQube code analysis and Quality Gate') {
                     environment {
+                        scriptPATH = "${env.JENKINS_HOME}/workspace/scripts"
                         scannerHome = tool name: 'sonar-scanner'
                     }
                     steps {
                         echo "Do Static code analysis with SonarQube"
                         withSonarQubeEnv('T2P-SonarQube') { 
                             sh "pwd && ls -altr"  
-                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/sonar-project.properties"
+                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.scriptPATH}/sonar-project.properties"
                         }
                         timeout(time: 10, unit: 'MINUTES') {
                             waitForQualityGate abortPipeline: true
