@@ -1,67 +1,57 @@
+#!groovy
 @Library('SharedLibrary')_
 pipeline {
     agent any
+    environment {
+        report = "${env.resultPath}/php-demo"
+    }
     stages {
         stage("Checkout APP") {
             steps {
                 dir("app") {
-                    checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'DEVELOP']],
-                    doGenerateSubmoduleConfigurations: false,
-                    userRemoteConfigs: [
-                        [ url: 'git@dev-www.ibaht.com:dev_cfg.git' ], [credentialsId: 't2p-git']]
-                    ])
-                }
-                dir('app/api_checkout') {
-                    checkoutCode(
-                        branch: "origin/DEVELOP",
-                        appenv: "dev",
-                        repo: "dev_api_t2pcheckoutv3",
-                        credentialsId: "t2p-git"
-                    )
-                }
-                dir('app/_inc')  {
-                    checkoutCode(
-                        branch: "origin/DEVELOP",
-                        appenv: "dev",
-                        repo: "dev_inc_main",
-                        credentialsId: "t2p-git"
-                    )                 
+                    checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
                 }
             }
         }
-        stage('UnitTest') {
-            agent {
-                docker {
-                    args "-v app:/data"
-                    image '986003803012.dkr.ecr.ap-southeast-1.amazonaws.com/nginxphp72:latest'
-                    reuseNode true
+        stage("Tests") {
+            parallel {
+                stage('UnitTest') {
+                    agent {
+                        docker {
+                            args "-v app:/app"
+                            image 'webdevops/php'
+                            reuseNode true
+                        }
+                    }
+                    options {
+                        timeout(time: 10, unit: "MINUTES")
+                    }
+                    steps {
+                        dir('/app') {
+                            echo "Composer Update"
+                            sh 'composer update'
+                            sh 'ls'
+                            echo "Unit Test"
+                            sh 'vendor/bin/phpunit'
+                        }
+                    }
                 }
-            }
-            options {
-                timeout(time: 5, unit: "MINUTES")
-            }
-            steps {
-                dir('/data/api_checkout') {
-                    echo "Composer Update"
-                    sh 'composer update'
-                    sh 'ls'
-                    echo "Unit Test"
-                    sh './vendor/bin/phpunit'
+                stage('SonarQube code analysis') {
+                    steps {
+                        withSonarQubeEnv('T2P-SonarQube') {   
+                            withEnv(["scannerHome = ${tool sonar-scanner}"]) {
+                                sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar.projectFile"
+                            } // submitted SonarQube taskId is automatically attached to the pipeline context
+                        }
+                    }
                 }
-            }
-        }
-        stage('SCA and Quality') {
-            environment {
-                scannerHome = tool 'sonar-scanner'
-            }
-            steps {   
-                sonarprop = pwd()         
-                sonarqubeScan(
-                    file: "sonar.properties",
-                    home: "${scannerHome}"
-                )
+                stage('Quality Gate') {
+                    steps {
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    }
+                }
             }
         }
         // stage("OWASP dependency check") {
@@ -72,20 +62,16 @@ pipeline {
         // }
         stage("report") {
             steps {
-                step([$class: 'CopyArtifact',
-                projectName: 'CI_report',
-                filter: 'result/*'])
-                reportHTML(
-                    reportDir: 'result/',
-                    reportFiles: "testCI.html",
-                    reportName: testCI_report
-                )
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'result/*', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: 'Results'])
             }
         }
     }
     post {
-        always {
-            cleanWs deleteDirs: true
+        // always {
+        //     cleanWs()
+        // }
+        unstable {
+            echo "UNSTABLE runs after ALWAYS"
         }
     }
 }
