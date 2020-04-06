@@ -61,7 +61,7 @@ pipeline {
         // }
         stage("report") {
             steps {
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'result/*', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: 'Results'])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'result', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: 'PHP-Test-Pipeline-Results'])
             }
         }
     }
