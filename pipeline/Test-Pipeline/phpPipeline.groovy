@@ -2,6 +2,9 @@
 @Library('SharedLibrary')_
 pipeline {
     agent any
+    options{
+        ansiColor("xterm")
+    }
     environment {
         report = "${env.resultPath}/php-demo"
     }
@@ -35,16 +38,27 @@ pipeline {
                     }
                 }
                 stage('SonarQube code analysis and Quality Gate') {
+                    environment {
+                        scannerHome = tool name: 'sonar-scanner'
+                    }
                     steps {
                         echo "Do Static code analysis with SonarQube"
                         withSonarQubeEnv('T2P-SonarQube') {   
-                            withEnv(["scannerHome = ${tool sonar-scanner}"]) {
-                                sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar.projectFile"
-                            } // submitted SonarQube taskId is automatically attached to the pipeline context
-                            echo "Get QualityGate response from SonarQube"
+                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
+                            // submitted SonarQube taskId is automatically attached to the pipeline context
                             timeout(time: 10, unit: 'MINUTES') {
                                 waitForQualityGate abortPipeline: true
                             }
+                        }
+                    }
+                }
+                stage("Quality Gate") {
+                    steps {
+                        timeout(time: 10, unit: 'MINUTE') {
+                            echo "Get QualityGate response from SonarQube"
+                            // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                            // true = set pipeline to UNSTABLE, false = don't
+                            waitForQualityGate abortPipeline: true
                         }
                     }
                 }
