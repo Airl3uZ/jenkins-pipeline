@@ -45,9 +45,9 @@ pipeline {
                             // echo "${env.WORKSPACE}"
                             // sh "pwd && ls -altr"  
                             sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
-                            timeout(time: 10, unit: 'MINUTES') {
-                            waitForQualityGate abortPipeline: true
                         }
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
                         }
                     }
                 }
