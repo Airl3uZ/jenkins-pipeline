@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage("Checkout APP") {
             steps {
-                def wsPath = pwd()
+                cleanWs deleteDirs: true
                 checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']],doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
             }
         }
