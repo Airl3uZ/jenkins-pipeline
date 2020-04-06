@@ -61,16 +61,16 @@ pipeline {
         // }
         stage("report") {
             steps {
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'result', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: 'PHP-Test-Pipeline-Results'])
+                publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'result', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: 'PHP-Test-Pipeline-Results'])
             }
         }
     }
-    post {
-        // always {
-        //     cleanWs()
-        // }
-        unstable {
-            echo "UNSTABLE runs after ALWAYS"
-        }
-    }
+    // post {
+    //     always {
+    //         cleanWs()
+    //     }
+    //     unstable {
+    //         echo "UNSTABLE runs after ALWAYS"
+    //     }
+    // }
 }
