@@ -2,9 +2,6 @@
 @Library('SharedLibrary')_
 pipeline {
     agent any
-    options{
-        ansiColor("xterm")
-    }
     environment {
         report = "${env.resultPath}/php-demo"
     }
@@ -46,16 +43,16 @@ pipeline {
                         withSonarQubeEnv('T2P-SonarQube') {   
                             sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
                             // submitted SonarQube taskId is automatically attached to the pipeline context
-                            timeout(time: 10, unit: 'MINUTES') {
-                                waitForQualityGate abortPipeline: true
-                            }
+                            // timeout(time: 10, unit: 'MINUTES') {
+                            //     waitForQualityGate abortPipeline: true
+                            // }
                         }
                     }
                 }
                 stage("Quality Gate") {
                     steps {
+                        echo "Get QualityGate response from SonarQube"
                         timeout(time: 10, unit: 'MINUTE') {
-                            echo "Get QualityGate response from SonarQube"
                             // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
                             // true = set pipeline to UNSTABLE, false = don't
                             waitForQualityGate abortPipeline: true
