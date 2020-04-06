@@ -9,7 +9,6 @@ pipeline {
         stage("Checkout APP") {
             steps {
                 def wsPath = pwd()
-                cleanWs deleteDirs: true
                 checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']],doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
             }
         }
@@ -44,7 +43,7 @@ pipeline {
                         dir('Test-Pipeline') {
                             echo "Do Static code analysis with SonarQube"
                             withSonarQubeEnv('T2P-SonarQube') {   
-                                sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${wsPath}/sonar-project.properties"
+                                sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/sonar-project.properties"
                                 // submitted SonarQube taskId is automatically attached to the pipeline context
                                 timeout(time: 10, unit: 'MINUTES') {
                                     waitForQualityGate abortPipeline: true
