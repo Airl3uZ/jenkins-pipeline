@@ -8,6 +8,9 @@ pipeline {
     stages {
         stage("Checkout APP") {
             steps {
+                script {
+                    sh printenv
+                }
                 checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']],doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
             }
         }
@@ -41,7 +44,7 @@ pipeline {
                     steps {
                         echo "Do Static code analysis with SonarQube"
                         withSonarQubeEnv('T2P-SonarQube') { 
-                            sh "${env.WORKSPACE}"
+                            echo "${env.WORKSPACE}"
                             sh "pwd && ls -altr"  
                             sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
                         }
