@@ -41,8 +41,9 @@ pipeline {
                     steps {
                         echo "Do Static code analysis with SonarQube"
                         withSonarQubeEnv('T2P-SonarQube') { 
+                            sh "${env.WORKSPACE}"
                             sh "pwd && ls -altr"  
-                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.env.WORKSPACE}/pipeline/Test-Pipeline/sonar-project.properties"
+                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
                         }
                         timeout(time: 10, unit: 'MINUTES') {
                             waitForQualityGate abortPipeline: true
