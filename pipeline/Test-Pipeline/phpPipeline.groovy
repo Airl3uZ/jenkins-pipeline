@@ -25,7 +25,7 @@ pipeline {
                         timeout(time: 10, unit: "MINUTES")
                     }
                     steps {
-                        dir('/app') {
+                        dir('app') {
                             echo "Composer Update"
                             sh 'composer update'
                             sh 'ls'
