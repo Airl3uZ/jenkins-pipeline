@@ -20,24 +20,29 @@ pipeline {
         stage("Tests") {
             parallel {
                 stage('UnitTest') {
-                    agent {
-                        docker {
-                            args "-v data:/app"
-                            image 'webdevops/php'
-                            reuseNode true
-                        }
-                    }
+                    // agent {
+                    //     docker {
+                    //         args "-v data:/app"
+                    //         image 'webdevops/php'
+                    //         customWorkspace "api_checkout"
+                    //         reuseNode true
+                    //     }
+                    // }
                     options {
                         timeout(time: 10, unit: "MINUTES")
                     }
                     steps {
-                        dir('app') {
+                        scripts {
+                        docker.image('webdevops/php-nginx:latest').inside("-v app:/app") {
                             sh "pwd && ls -altr"
-                            echo "Composer Update"
-                            sh 'composer update'
-                            sh 'ls'
-                            echo "Unit Test"
-                            sh './vendor/bin/phpunit'
+                            // sh 'cd /app && pwd && composer update'
+                        }
+                            // sh "pwd && ls -altr"
+                            // echo "Composer Update"
+                            // sh 'composer update'
+                            // sh 'ls'
+                            // echo "Unit Test"
+                            // sh './vendor/bin/phpunit'
                         }
                     }
                 }
