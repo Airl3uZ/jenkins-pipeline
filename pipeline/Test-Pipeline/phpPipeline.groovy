@@ -49,11 +49,17 @@ pipeline {
                         // timeout(time: 10, unit: 'MINUTES') {
                         //     waitForQualityGate abortPipeline: true
                         // }
+                    }
+                }
+                stage('Quality Gate') {
+                    steps {
                         timeout(time: 1, unit: 'HOURS') { 
-                            def qg = waitForQualityGate()
-                            sh "println ${qg}"
-                            if (qg.status != 'OK') {
-                                error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                            script {
+                                def qg = waitForQualityGate()
+                                sh "println ${qg}"
+                                if (qg.status != 'OK') {
+                                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                                }
                             }
                         }
                     }
