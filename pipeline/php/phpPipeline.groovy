@@ -2,73 +2,61 @@
 pipeline {
     agent any
     stages {
-        // stage("check Project Properties") {
-        //     steps {
-        //         script  {
-        //             def props = readProperties  file: 'project.properties'
-        //             echo "${props.PROJECTNAME}"
-        //         }
-        //     }
-        // }
         stage("Checkout APP") {
             steps {
-                dir("app") {
-                    checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'DEVELOP']],
-                    doGenerateSubmoduleConfigurations: false,
-                    userRemoteConfigs: [
-                        [ url: 'git@dev-www.ibaht.com:dev_cfg.git' ], [credentialsId: 't2p-git']]
-                    ])
-                }
-                dir('app/api_checkout') {
-                    checkoutCode(
-                        branch: "origin/DEVELOP",
-                        appenv: "dev",
-                        repo: "dev_api_t2pcheckoutv3",
-                        credentialsId: "t2p-git"
-                    )
-                }
-                dir('app/_inc')  {
-                    checkoutCode(
-                        branch: "origin/DEVELOP",
-                        appenv: "dev",
-                        repo: "dev_inc_main",
-                        credentialsId: "t2p-git"
-                    )                 
-                }
+                checkout([$class: 'GitSCM', branches: [[name: 'origin/DEVELOP']], doGenerateSubmoduleConfigurations: false,extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'data']],userRemoteConfigs: [[credentialsId: '75aa10b1-d3c0-4675-818f-73b572b08684', url: 'git@dev-www.ibaht.com:dev_cfg.git']])
             }
         }
-        stage('UnitTest') {
-            agent {
-                docker {
-                    args "-v app:/data"
-                    image '986003803012.dkr.ecr.ap-southeast-1.amazonaws.com/nginxphp72:latest'
-                    reuseNode true
-                }
-            }
-            options {
-                timeout(time: 5, unit: "MINUTES")
-            }
+        stage('checkout api_checkout') {
             steps {
-                dir('/data/api_checkout') {
-                    echo "Composer Update"
-                    sh 'composer update'
-                    sh 'ls'
-                    echo "Unit Test"
-                    sh './vendor/bin/phpunit'
-                }
+                checkout([$class: 'GitSCM', branches: [[name: 'origin/DEVELOP']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'data/api_checkout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '75aa10b1-d3c0-4675-818f-73b572b08684', url: 'git@dev-www.ibaht.com:dev_api_t2pcheckoutv3.git']]])
             }
         }
-        stage('SCA and Quality') {
-            environment {
-                scannerHome = tool 'sonar-scanner'
+        stage('Checkout INC') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: 'origin/DEVELOP']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'data/_inc']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '75aa10b1-d3c0-4675-818f-73b572b08684', url: 'git@dev-www.ibaht.com:dev_inc.git']]]) 
             }
-            steps {            
-                sonarqubeScan(
-                    file: "sonar.properties",
-                    home: "${scannerHome}"
-                )
+        }
+        stage("Tests") {
+            parallel {
+                stage('UnitTest') {
+                    agent {
+                        docker {
+                            args "-v app:/app"
+                            image 'webdevops/php'
+                            reuseNode true
+                        }
+                    }
+                    options {
+                        timeout(time: 10, unit: "MINUTES")
+                    }
+                    steps {
+                        dir('app') {
+                            echo "Composer Update"
+                            sh 'composer update'
+                            sh 'ls'
+                            echo "Unit Test"
+                            sh './vendor/bin/phpunit'
+                        }
+                    }
+                }
+                stage('SonarQube code analysis and Quality Gate') {
+                    environment {
+                        scannerHome = tool name: 'sonar-scanner'
+                    }
+                    steps {
+                        // sh "printenv"
+                        echo "Do Static code analysis with SonarQube"
+                        withSonarQubeEnv('T2P-SonarQube') { 
+                            // echo "${env.WORKSPACE}"
+                            // sh "pwd && ls -altr"  
+                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
+                        }
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    }
+                }
             }
         }
         // stage("OWASP dependency check") {
