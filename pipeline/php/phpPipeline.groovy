@@ -29,7 +29,10 @@ pipeline {
                             reuseNode true
                         }
                     }
-                    dir('data/api_checkout') {
+                    steps {
+                        dir('data/api_checkout') {
+                            sh "pwd && ls -altr" 
+                        }
                         sh "pwd && ls -altr"
                         // echo "Composer Update"
                         // sh 'composer update'
