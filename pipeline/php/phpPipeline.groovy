@@ -21,13 +21,13 @@ pipeline {
         stage("Tests") {
             parallel {
                 stage('UnitTest') {
-                    agent {
-                        docker {
-                            args "-v data:/app"
-                            image 'webdevops/php'
-                            reuseNode true
-                        }
-                    }
+                    // agent {
+                    //     docker {
+                    //         args "-v data:/app"
+                    //         image 'webdevops/php'
+                    //         reuseNode true
+                    //     }
+                    // }
                     steps {
                         withDockerContainer(args: '-v data:/data', image: 'webdevops/php') {
                             sh "pwd && ls -altr"
