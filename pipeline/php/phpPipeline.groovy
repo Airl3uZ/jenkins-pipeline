@@ -32,6 +32,7 @@ pipeline {
                     }
                     steps {
                         dir('app') {
+                            sh "pwd && ls -altr"
                             echo "Composer Update"
                             sh 'composer update'
                             sh 'ls'
