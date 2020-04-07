@@ -43,18 +43,18 @@ pipeline {
                     }
                 }
                 stage('SonarQube code analysis and Quality Gate') {
-                    // environment {
-                    //     scannerHome = tool name: 'sonar-scanner'
-                    // }
+                    environment {
+                        scannerHome = tool name: 'sonar-scanner'
+                    }
                     steps {
                         // sh "printenv"
                         echo "Do Static code analysis with SonarQube"
-                        // withSonarQubeEnv('T2P-SonarQube') { 
-                        //     sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
-                        // }
-                        // timeout(time: 10, unit: 'MINUTES') {
-                        //     waitForQualityGate abortPipeline: true
-                        // }
+                        withSonarQubeEnv('T2P-SonarQube') { 
+                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
+                        }
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
                     }
                 }
             }
