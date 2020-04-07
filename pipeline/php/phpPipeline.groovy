@@ -34,11 +34,11 @@ pipeline {
                             sh "pwd && ls -altr"
                         }
                         sh "pwd && ls -altr"
-                        echo "Composer Update"
-                        sh 'composer update'
-                        sh 'ls'
-                        echo "Unit Test"
-                        sh './vendor/bin/phpunit'
+                        // echo "Composer Update"
+                        // sh 'composer update'
+                        // sh 'ls'
+                        // echo "Unit Test"
+                        // sh './vendor/bin/phpunit'
                     }
                 }
                 stage('SonarQube code analysis and Quality Gate') {
