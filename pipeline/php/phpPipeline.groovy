@@ -1,3 +1,4 @@
+#!groovy
 @Library('SharedLibrary')_
 pipeline {
     agent any
@@ -24,21 +25,16 @@ pipeline {
                         docker {
                             args "-v data:/app"
                             image 'webdevops/php'
-                            customWorkspace "api_checkout"
                             reuseNode true
                         }
                     }
-                    options {
-                        timeout(time: 10, unit: "MINUTES")
-                    }
-                    // steps {
-                            sh "pwd && ls -altr"
-                            echo "Composer Update"
-                            sh 'composer update'
-                            sh 'ls'
-                            echo "Unit Test"
-                            sh './vendor/bin/phpunit'
-                        // }
+                    steps {
+                        sh "pwd && ls -altr"
+                        echo "Composer Update"
+                        sh 'composer update'
+                        sh 'ls'
+                        echo "Unit Test"
+                        sh './vendor/bin/phpunit'
                     }
                 }
                 stage('SonarQube code analysis and Quality Gate') {
@@ -58,24 +54,6 @@ pipeline {
                         }
                     }
                 }
-            }
-        }
-        // stage("OWASP dependency check") {
-        //     steps {
-        //         sh "mkdir -p report/owasp_dependency_check"
-        //         dependencyCheck additionalArguments: '--project testCI --scan app/** --out report/owasp_dependency_check/result.html --format HTML', odcInstallation: 'owasp-depend-chk'
-        //     }
-        // }
-        stage("report") {
-            steps {
-                step([$class: 'CopyArtifact',
-                projectName: 'CI_report',
-                filter: 'result/*'])
-                reportHTML(
-                    reportDir: 'result/',
-                    reportFiles: "testCI.html",
-                    reportName: testCI_report
-                )
             }
         }
     }
