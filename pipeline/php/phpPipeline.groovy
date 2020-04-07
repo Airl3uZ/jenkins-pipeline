@@ -30,7 +30,7 @@ pipeline {
                     //     }
                     // }
                     steps {
-                        withDockerContainer(args: '-v data:/data', image: 'webdevops/php') {
+                        withDockerContainer(args: '-v data:/data', image: 'webdevops/php', toolName: 'docker') {
                             sh "pwd && ls -altr"
                         }
                         sh "pwd && ls -altr"
