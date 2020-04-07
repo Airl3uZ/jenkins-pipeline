@@ -50,7 +50,7 @@ pipeline {
                         // sh "printenv"
                         echo "Do Static code analysis with SonarQube"
                         withSonarQubeEnv('T2P-SonarQube') { 
-                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
+                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/php/sonar-project.properties"
                         }
                         timeout(time: 10, unit: 'MINUTES') {
                             waitForQualityGate abortPipeline: true
