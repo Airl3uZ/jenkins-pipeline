@@ -29,6 +29,11 @@ pipeline {
                         }
                     }
                     steps {
+                        scripts {
+                            docker.image(webdevops/php).inside(){
+                                sh "pwd && ls -altr"
+                            }
+                        }
                         sh "pwd && ls -altr"
                         echo "Composer Update"
                         sh 'composer update'
