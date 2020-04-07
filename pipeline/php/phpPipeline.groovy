@@ -20,30 +20,25 @@ pipeline {
         stage("Tests") {
             parallel {
                 stage('UnitTest') {
-                    // agent {
-                    //     docker {
-                    //         args "-v data:/app"
-                    //         image 'webdevops/php'
-                    //         customWorkspace "api_checkout"
-                    //         reuseNode true
-                    //     }
-                    // }
+                    agent {
+                        docker {
+                            args "-v data:/app"
+                            image 'webdevops/php'
+                            customWorkspace "api_checkout"
+                            reuseNode true
+                        }
+                    }
                     options {
                         timeout(time: 10, unit: "MINUTES")
                     }
-                    steps {
-                        scripts {
-                        docker.image('webdevops/php-nginx:latest').inside("-v app:/app") {
+                    // steps {
                             sh "pwd && ls -altr"
-                            // sh 'cd /app && pwd && composer update'
-                        }
-                            // sh "pwd && ls -altr"
-                            // echo "Composer Update"
-                            // sh 'composer update'
-                            // sh 'ls'
-                            // echo "Unit Test"
-                            // sh './vendor/bin/phpunit'
-                        }
+                            echo "Composer Update"
+                            sh 'composer update'
+                            sh 'ls'
+                            echo "Unit Test"
+                            sh './vendor/bin/phpunit'
+                        // }
                     }
                 }
                 stage('SonarQube code analysis and Quality Gate') {
