@@ -22,17 +22,14 @@ pipeline {
         stage("Tests") {
             parallel {
                 stage('UnitTest') {
-                    // agent {
-                    //     docker {
-                    //         args "-v data:/app"
-                    //         image 'webdevops/php'
-                    //         reuseNode true
-                    //     }
-                    // }
-                    steps {
-                        withDockerContainer(args: '-v data:/data:rw', image: 'webdevops/php', toolName: 'docker') {
-                            sh "pwd && ls -altr"
+                    agent {
+                        docker {
+                            args "-v data:/app:rw"
+                            image 'webdevops/php'
+                            reuseNode true
                         }
+                    }
+                    dir('data/api_checkout') {
                         sh "pwd && ls -altr"
                         // echo "Composer Update"
                         // sh 'composer update'
