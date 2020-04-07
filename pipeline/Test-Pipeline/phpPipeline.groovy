@@ -46,8 +46,15 @@ pipeline {
                             // sh "pwd && ls -altr"  
                             sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
                         }
-                        timeout(time: 10, unit: 'MINUTES') {
-                            waitForQualityGate abortPipeline: true
+                        // timeout(time: 10, unit: 'MINUTES') {
+                        //     waitForQualityGate abortPipeline: true
+                        // }
+                        timeout(time: 1, unit: 'HOURS') { 
+                            def qg = waitForQualityGate()
+                            sh "println ${qg}"
+                            if (qg.status != 'OK') {
+                                error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                            }
                         }
                     }
                 }
