@@ -8,7 +8,12 @@ pipeline {
     stages {
         stage("Checkout APP") {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'origin/citest']],doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Airl3uZ/demo-php-ci.git']]])
+                gitCheckout(
+                    branch: 'origin/citest',
+                    repo: 'demo-php-ci.git',
+                    user: 'Airl3uZ',
+                    path: 'data'
+                )
             }
         }
         stage("Tests") {
@@ -16,7 +21,7 @@ pipeline {
                 stage('UnitTest') {
                     agent {
                         docker {
-                            args "-v app:/app"
+                            args "-v data:/app"
                             image 'webdevops/php'
                             reuseNode true
                         }
@@ -25,9 +30,9 @@ pipeline {
                         timeout(time: 10, unit: "MINUTES")
                     }
                     steps {
-                        dir('app') {
+                        dir('data') {
                             echo "check environment"
-                            sh "ls -altr && whoami && hostname"
+                            sh "pwd ls -altr && whoami && hostname"
                             echo "Composer Update"
                             sh 'composer update'
                             sh 'ls'
