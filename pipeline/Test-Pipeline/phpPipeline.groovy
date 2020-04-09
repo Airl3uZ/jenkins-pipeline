@@ -39,7 +39,7 @@ pipeline {
                 }
             }
         }
-            parallel {
+            // parallel {
                 stage('UnitTest') {
                 //     agent {
                 //         docker {
@@ -95,7 +95,7 @@ pipeline {
                         }
                     }
                 }
-            }
+            // }
         // }
         // stage("OWASP dependency check") {
         //     steps {
