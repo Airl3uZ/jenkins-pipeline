@@ -38,6 +38,7 @@ pipeline {
                     // sh './vendor/bin/phpunit'
                 }
             }
+        }
             parallel {
                 stage('UnitTest') {
                 //     agent {
