@@ -76,7 +76,7 @@ pipeline {
                         withSonarQubeEnv('T2P-SonarQube') { 
                             // echo "${env.WORKSPACE}"
                             // sh "pwd && ls -altr"  
-                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=${env.WORKSPACE}/scripts/pipeline/Test-Pipeline/sonar-project.properties"
+                            sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=data/sonar-project.properties"
                         }
                         // timeout(time: 10, unit: 'MINUTES') {
                         //     waitForQualityGate abortPipeline: true
