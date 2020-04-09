@@ -39,7 +39,7 @@ pipeline {
                 }
             }
             parallel {
-                // stage('UnitTest') {
+                stage('UnitTest') {
                 //     agent {
                 //         docker {
                 //             args "-v ///${pwd}/data/app:/app:rw"
@@ -61,7 +61,10 @@ pipeline {
                             // sh './vendor/bin/phpunit'
                 //         }
                 //     }
-                // }
+                    steps {
+                        echo "Test"
+                    }
+                }
                 stage('SonarQube code analysis and Quality Gate') {
                     environment {
                         scannerHome = tool name: 'sonar-scanner'
