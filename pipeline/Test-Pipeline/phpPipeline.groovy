@@ -35,7 +35,7 @@ pipeline {
                     sh 'composer update'
                     sh 'ls'
                     echo "Unit Test"
-                    // sh './vendor/bin/phpunit'
+                    sh './vendor/bin/phpunit'
                 }
             }
         }
