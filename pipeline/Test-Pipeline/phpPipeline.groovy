@@ -96,7 +96,7 @@ pipeline {
                     }
                 }
             }
-        }
+        // }
         // stage("OWASP dependency check") {
         //     steps {
         //         sh "mkdir -p report/owasp_dependency_check"
