@@ -103,11 +103,6 @@ pipeline {
         //         dependencyCheck additionalArguments: '--project testCI --scan app/** --out report/owasp_dependency_check/result.html --format HTML', odcInstallation: 'owasp-depend-chk'
         //     }
         // }
-        stage("report") {
-            steps {
-                publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'results', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: 'PHP-Test-Pipeline-Results'])
-            }
-        }
     }
     post {
         success {
