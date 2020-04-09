@@ -17,30 +17,51 @@ pipeline {
             }
         }
         stage("Tests") {
-            parallel {
-                stage('UnitTest') {
-                    agent {
-                        docker {
-                            args "-v ///${pwd}/data/app:/app:rw"
-                            image 'webdevops/php'
-                            reuseNode true
-                        }
-                    }
-                    options {
-                        timeout(time: 10, unit: "MINUTES")
-                    }
-                    steps {
-                        dir('data/app') {
-                            echo "check environment"
-                            sh "pwd ls -altr && whoami && hostname"
-                            echo "Composer Update"
-                            sh 'composer update'
-                            sh 'ls'
-                            echo "Unit Test"
-                            sh './vendor/bin/phpunit'
-                        }
-                    }
+            agent {
+                docker {
+                    args "-v ///${pwd}/data/app:/app:rw"
+                    image 'webdevops/php'
+                    reuseNode true
                 }
+            }
+            options {
+                timeout(time: 10, unit: "MINUTES")
+            }
+            steps {
+                dir('data/app') {
+                    echo "check environment"
+                    sh "pwd ls -altr && whoami && hostname"
+                    echo "Composer Update"
+                    sh 'composer update'
+                    sh 'ls'
+                    echo "Unit Test"
+                    // sh './vendor/bin/phpunit'
+                }
+            }
+            parallel {
+                // stage('UnitTest') {
+                //     agent {
+                //         docker {
+                //             args "-v ///${pwd}/data/app:/app:rw"
+                //             image 'webdevops/php'
+                //             reuseNode true
+                //         }
+                //     }
+                //     options {
+                //         timeout(time: 10, unit: "MINUTES")
+                //     }
+                //     steps {
+                //         dir('data/app') {
+                //             echo "check environment"
+                //             sh "pwd ls -altr && whoami && hostname"
+                //             echo "Composer Update"
+                //             sh 'composer update'
+                //             sh 'ls'
+                //             echo "Unit Test"
+                            // sh './vendor/bin/phpunit'
+                //         }
+                //     }
+                // }
                 stage('SonarQube code analysis and Quality Gate') {
                     environment {
                         scannerHome = tool name: 'sonar-scanner'
