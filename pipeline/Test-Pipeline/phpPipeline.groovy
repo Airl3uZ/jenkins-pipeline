@@ -21,7 +21,7 @@ pipeline {
                 stage('UnitTest') {
                     agent {
                         docker {
-                            args "-v ./data/app:/app"
+                            args "-v ///${pwd}/data/app:/app:rw"
                             image 'webdevops/php'
                             reuseNode true
                         }
