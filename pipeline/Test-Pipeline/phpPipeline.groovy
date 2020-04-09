@@ -84,12 +84,12 @@ pipeline {
             }
         }
     }
-    // post {
-    //     always {
-    //         cleanWs()
-    //     }
-    //     unstable {
-    //         echo "UNSTABLE runs after ALWAYS"
-    //     }
-    // }
+    post {
+        success {
+            notifyLine("Success")
+        }
+        unsuccessful {
+            notifyLine("failed")
+        }
+    }
 }
