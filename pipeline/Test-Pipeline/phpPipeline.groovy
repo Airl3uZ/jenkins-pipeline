@@ -30,7 +30,7 @@ pipeline {
                         timeout(time: 10, unit: "MINUTES")
                     }
                     steps {
-                        dir('data') {
+                        dir('data/app') {
                             echo "check environment"
                             sh "pwd ls -altr && whoami && hostname"
                             echo "Composer Update"
