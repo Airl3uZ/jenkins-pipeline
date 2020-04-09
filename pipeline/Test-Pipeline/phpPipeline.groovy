@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage("Checkout APP") {
             steps {
-                gitCheckout(
+                githubCheckout(
                     branch: 'origin/citest',
                     repo: 'demo-php-ci.git',
                     user: 'Airl3uZ',
