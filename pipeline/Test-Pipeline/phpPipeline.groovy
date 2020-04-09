@@ -26,6 +26,8 @@ pipeline {
                     }
                     steps {
                         dir('app') {
+                            echo "check environment"
+                            sh "ls -altr && whoami && hostname"
                             echo "Composer Update"
                             sh 'composer update'
                             sh 'ls'
@@ -55,6 +57,9 @@ pipeline {
                                 println("${qg}")
                                 if (qg.status != 'OK') {
                                     error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                                }
+                                else {
+                                    echo "${qg.status}"
                                 }
                             }
                         }

@@ -7,17 +7,32 @@ pipeline {
             parallel {
                 stage('Checkout cfg') {
                     steps {
-                        checkout([$class: 'GitSCM', branches: [[name: 'origin/DEVELOP']], doGenerateSubmoduleConfigurations: false,extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'data']],userRemoteConfigs: [[credentialsId: '75aa10b1-d3c0-4675-818f-73b572b08684', url: 'git@dev-www.ibaht.com:dev_cfg.git']]])
+                        gitCheckout(
+                            branch: 'origin/DEVELOP',
+                            repo: 'dev_cfg.git',
+                            url: 'git@dev-www.ibaht.com',
+                            path: 'data'
+                        )
                     }
                 }
                 stage('checkout api_checkout') {
                     steps {
-                        checkout([$class: 'GitSCM', branches: [[name: 'origin/DEVELOP']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'data/api_checkout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '75aa10b1-d3c0-4675-818f-73b572b08684', url: 'git@dev-www.ibaht.com:dev_api_t2pcheckoutv3.git']]])
+                        gitCheckout(
+                            branch: 'origin/DEVELOP',
+                            repo: 'dev_api_t2pcheckoutv3.git',
+                            url: 'git@dev-www.ibaht.com',
+                            path: 'data/api_checkout'
+                        )
                     }
                 }
                 stage('Checkout INC') {
                     steps {
-                        checkout([$class: 'GitSCM', branches: [[name: 'origin/DEVELOP']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'data/_inc']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '75aa10b1-d3c0-4675-818f-73b572b08684', url: 'git@dev-www.ibaht.com:dev_inc.git']]]) 
+                        gitCheckout(
+                            branch: 'origin/DEVELOP',
+                            repo: 'dev_inc.git',
+                            url: 'git@dev-www.ibaht.com',
+                            path: 'data/_inc'
+                        )
                     }
                 }
             }
