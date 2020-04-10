@@ -20,7 +20,19 @@ pipeline {
                     println config.environment
                     // parseConfig("${config}")
                 }
-                pipelineTemplate("${config}")
+            }
+        }
+        stage("CheckoutCode") {
+            when {
+                expression {"${config.project.scm}" == 'github'}
+            }
+            steps {
+                githubCheckout(
+                    branch: "${config.project.branch}",
+                    repo: "${config.project.repo}",
+                    user: "${config.project.user}",
+                    path: "${config.project.localPath}"
+                )
             }
         }
     }
