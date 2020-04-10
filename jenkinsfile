@@ -1,33 +1,27 @@
-pipeline{
+@Library('SharedLibrary') _
+pipeline {
     agent any
-    stages{
-        stage("A"){
-            steps{
-                echo "========executing A========"
-                load ".envvars/stacktest-staging.groovy"
-            }
-            post{
-                always{
-                    echo "========always========"
-                }
-                success{
-                    echo "========A executed successfully========"
-                }
-                failure{
-                    echo "========A execution failed========"
-                }
+    stages {
+        stage('Checkout') {
+            steps {
+                githubCheckout(
+                    branch: 'origin/citest',
+                    repo: 'demo-php-ci.git',
+                    user: 'Airl3uZ',
+                    path: 'data'
+                )
             }
         }
-    }
-    post{
-        always{
-            echo "========always========"
-        }
-        success{
-            echo "========pipeline executed successfully ========"
-        }
-        failure{
-            echo "========pipeline execution failed========"
+        stage("Get Configuration") {
+            steps {
+                script {
+                    config = readYaml file: "data/ci/ciconfig.yml"
+                    println config
+                    println config.environment
+                    // parseConfig("${config}")
+                }
+                pipelineTemplate("${config}")
+            }
         }
     }
 }
