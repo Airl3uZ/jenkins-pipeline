@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     config = readYaml file: "data/ci/ciconfig.yml"
-                    println config.project.steps.size()
+                    println config.project.steplist.size()
                 }
             }
         }
