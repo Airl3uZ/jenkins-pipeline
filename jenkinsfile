@@ -14,9 +14,10 @@ pipeline {
         }
         stage("Get Configuration") {
             steps {
+                echo "Demo CI"
                 script {
                     config = readYaml file: "data/ci/ciconfig.yml"
-                    println config.project.steplist.size()
+                    println config
                 }
             }
         }
@@ -31,6 +32,15 @@ pipeline {
                     user: "${config.project.user}",
                     path: "${config.project.localPath}"
                 )
+            }
+        }
+        stage("Test") {
+            steps {
+                script {
+                    for(String testStep: config.project.testStep {
+                        println testStep
+                    }
+                }
             }
         }
     }
