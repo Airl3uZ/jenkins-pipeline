@@ -16,9 +16,7 @@ pipeline {
             steps {
                 script {
                     config = readYaml file: "data/ci/ciconfig.yml"
-                    println config
-                    println config.environment
-                    // parseConfig("${config}")
+                    println config.project.steps.size()
                 }
             }
         }
