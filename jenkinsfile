@@ -1,7 +1,7 @@
 @Library('SharedLibrary') _
-pipeline {
-    agent any
-    stages {
+node {
+    // agent any
+    // stages {
         stage('Checkout') {
             steps {
                 githubCheckout(
@@ -22,28 +22,18 @@ pipeline {
                 }
             }
         }
-        stage("CheckoutCode") {
-            when {
-                expression {"${project.scm}" == 'github'}
-            }
-            steps {
-                githubCheckout(
-                    branch: "${project.branch}",
-                    repo: "${project.repo}",
-                    user: "${project.user}",
-                    path: "${project.localPath}"
-                )
-            }
+        stage("Call pipeline") {
+            "${project.lang}"Pipeline
         }
-        stage("Test") {
-            steps {
-                script {
-                    for(String testStep: project.testStep) {
-                        println testStep
-                        load "${project.lang}-${testStep}.groovy"
-                    }
-                }
-            }
-        }
-    }
-}
+        // stage("Test") {
+        //     steps {
+        //         script {
+        //             for(String testStep: project.testStep) {
+        //                 println testStep
+        //                 load "${project.lang}-${testStep}.groovy"
+        //             }
+        //         }
+        //     }
+        // }
+    // }
+// }
