@@ -4,10 +4,9 @@ pipeline {
     stages {
         stage('Get Configuration') {
             steps {
-                githubCheckout(
+                githubConfigCheckout(
                     branch: 'origin/citest',
                     repo: 'demo-php-ci.git',
-                    extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: 'ci']],          [$class: 'RelativeTargetDirectory', relativeTargetDir: 'ci' ]]],
                     user: 'Airl3uZ',
                 )
                 script {
@@ -26,7 +25,7 @@ pipeline {
                     branch: "${project.branch}",
                     repo: "${project.repo}",
                     user: "${project.user}",
-                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${project.localPath}" ]]
+                    path: "${project.localPath}"
                 )
             }
         }
