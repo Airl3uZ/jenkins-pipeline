@@ -18,27 +18,29 @@ pipeline {
                 script {
                     config = readYaml file: "data/ci/ciconfig.yml"
                     println config
+                    project = config.project
                 }
             }
         }
         stage("CheckoutCode") {
             when {
-                expression {"${config.project.scm}" == 'github'}
+                expression {"${project.scm}" == 'github'}
             }
             steps {
                 githubCheckout(
-                    branch: "${config.project.branch}",
-                    repo: "${config.project.repo}",
-                    user: "${config.project.user}",
-                    path: "${config.project.localPath}"
+                    branch: "${project.branch}",
+                    repo: "${project.repo}",
+                    user: "${project.user}",
+                    path: "${project.localPath}"
                 )
             }
         }
         stage("Test") {
             steps {
                 script {
-                    for(String testStep: config.project.testStep) {
+                    for(String testStep: project.testStep) {
                         println testStep
+                        "${project.lang}-${testStep}"()
                     }
                 }
             }
