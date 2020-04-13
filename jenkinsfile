@@ -3,17 +3,17 @@ node {
     // agent any
     // stages {
         stage('Checkout') {
-            steps {
+            // steps {
                 githubCheckout(
                     branch: 'origin/citest',
                     repo: 'demo-php-ci.git',
                     user: 'Airl3uZ',
                     path: 'data'
                 )
-            }
+            // }
         }
         stage("Get Configuration") {
-            steps {
+            // steps {
                 // echo "Demo CI"
                 script {
                     config = readYaml file: "data/ci/ciconfig.yml"
