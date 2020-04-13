@@ -1,39 +1,43 @@
 @Library('SharedLibrary') _
-node {
-    // agent any
-    // stages {
-        stage('Checkout') {
-            // steps {
+pipeline {
+    agent any
+    stages {
+        stage('Get Configuration') {
+            steps {
                 githubCheckout(
                     branch: 'origin/citest',
                     repo: 'demo-php-ci.git',
+                    extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: 'ci']],          [$class: 'RelativeTargetDirectory', relativeTargetDir: 'ci' ]]],
                     user: 'Airl3uZ',
-                    path: 'data'
                 )
-            // }
-        }
-        stage("Get Configuration") {
-            // steps {
-                // echo "Demo CI"
                 script {
-                    config = readYaml file: "data/ci/ciconfig.yml"
+                    config = readYaml file: "ci/ciconfig.yml"
                     println config
                     project = config.project
                 }
-            // }
+            }
         }
-        stage("Call pipeline") {
-            "${project.lang}"Pipeline
+        stage("CheckoutCode") {
+            when {
+                expression {"${project.scm}" == 'github'}
+            }
+            steps {
+                githubCheckout(
+                    branch: "${project.branch}",
+                    repo: "${project.repo}",
+                    user: "${project.user}",
+                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${project.localPath}" ]]
+                )
+            }
         }
-        // stage("Test") {
-        //     steps {
-        //         script {
-        //             for(String testStep: project.testStep) {
-        //                 println testStep
-        //                 load "${project.lang}-${testStep}.groovy"
-        //             }
-        //         }
-        //     }
-        // }
-    // }
+        stage("Test") {
+            steps {
+                script {
+                    for(String testStep: project.testStep) {
+                        println testStep
+                    }
+                }
+            }
+        }
+    }
 }
