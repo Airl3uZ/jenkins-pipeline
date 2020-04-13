@@ -40,7 +40,7 @@ pipeline {
                 script {
                     for(String testStep: project.testStep) {
                         println testStep
-                        "${project.lang}-${testStep}"()
+                        load "${project.lang}-${testStep}.groovy"
                     }
                 }
             }
