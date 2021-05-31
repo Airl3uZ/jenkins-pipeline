@@ -74,6 +74,7 @@ pipeline {
                     post {
                         always {
                             publishCoverage adapters: [sonarGenericCoverageAdapter('results/coverage/coverage.xml')], sourceFileResolver: sourceFiles('STORE_ALL_BUILD')
+                            cleanWs()
                         }
                     }
                 }
